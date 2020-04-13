@@ -29,7 +29,8 @@
 DigitalOut redLED(LED1);
 InterruptIn sw2(SW2);
 
-EventQueue tilt_queue;
+EventQueue tilt_queue(32 * EVENTS_EVENT_SIZE);
+Timer timer;
 
 I2C i2c( PTD9,PTD8);
 Serial pc(USBTX, USBRX);
@@ -47,6 +48,7 @@ float* FXOS8700CQ();
 uint8_t who_am_i, data[2], res[6];
 int16_t acc16;
 float t[3];
+
 
 void FXOS8700CQ(){
     pc.baud(115200);
@@ -106,13 +108,17 @@ void FXOS8700CQ_writeRegs(uint8_t * data, int len) {
 
 
 void start_record(float origin[]){
-
-    if((origin[0]*t[0]+origin[1]*t[1]+origin[2]*t[2])<=0.707){
-        pc.printf("over 45 degree!!!!\r\n");
-    }else{
-        pc.prinf(" not thing happend?\r\n");
+    timer.start();
+    while(t<10){
+        FXOS8700CQ();
+        wait(0.1);
+        if(((origin[0]*t[0]+origin[1]*t[1]+origin[2]*t[2])/(sqrt(pow(origin[0], 2) + pow(origin[1], 2)+ pow(origin[2], 2))))<=0.707){
+            pc.printf("over 45 degree!!!!\r\n");
+        }else{
+            pc.printf(" not thing happend?\r\n");
+        }
     }
-    
+    timer.stop();
 }
 
 
@@ -123,9 +129,6 @@ void sw_fall_irq(float origin[]){
 }
 
 
-void check(){
-
-}
 
 int main(){
     // new
