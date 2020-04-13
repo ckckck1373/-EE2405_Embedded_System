@@ -152,9 +152,12 @@ void start_record(float origin[]){
 void sw_fall_irq(float origin[]){
     redLED = !redLED;
     tilt_queue.call(&start_record(origin));
+<<<<<<< HEAD
 
 }
 
+=======
+>>>>>>> 69fee46ec9ed5852b9b70c44b92d2359032e2271
 
 
 int main(){
@@ -178,6 +181,7 @@ int main(){
 }
 
 
+<<<<<<< HEAD
     © 2020 GitHub, Inc.
     Terms
     Privacy
@@ -192,3 +196,27 @@ int main(){
     Blog
     About
 
+=======
+
+int main(){
+    // new
+    float origin[3];
+    float tile_cap[3];
+
+    //init
+    FXOS8700CQ();
+    origin[0]=t[0];
+    origin[1]=t[1];
+    origin[2]=t[2];
+    wait(0.1);
+
+    //thread start
+    thread1.start(callback(&tilt_queue, &EventQueue::dispatch_forever));
+    sw2.fall(&sw_fall_irq(origin));
+    
+    while(1){wait(0.1);}
+    
+}
+
+
+>>>>>>> 69fee46ec9ed5852b9b70c44b92d2359032e2271
